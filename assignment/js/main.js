@@ -96,17 +96,33 @@ var resetApplication = function() {
 }
 
 $('#button-reset').click(resetApplication);
-
+// $('#button-reset').show()
 /** ---------------
 On draw
 
 Leaflet Draw runs every time a marker is added to the map. When this happens
 ---------------- */
-
+var myMarker;
 map.on('draw:created', function (e) {
   var type = e.layerType; // The type of shape
   var layer = e.layer; // The Leaflet layer for the shape
   var id = L.stamp(layer); // The unique Leaflet ID for the
-
+  myMarker=layer
+  myMarker.addTo(map)
+  state.markers.push(myMarker)
+  console.log(state.markers)
   console.log('Do something with the layer you just created:', layer, layer._latlng);
+  var coords = _.map(state.markers,function(marker){return [marker._latlng.lng, marker._latlng.lat]})
+  console.log(coords)
+  // _.map(coords,function(coord){return corList.push(`${coord};`)})
+  // route_lat_long = `${coords[0][0]},${coords[0][1]};${coords[1][0]},${coords[1][1]}`
+  // var direction = `https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${route_lat_long}?access_token=pk.eyJ1IjoieGludGlhbiIsImEiOiJjazh1bGtkOXMwY2h4M25wYXh2d3J5NGpzIn0.6f78lOG9zSD3Iicqt6nXqQ`
+  for(i=0;i<coords.length;i++){
+    if (i==0) {
+      route_lat_long=`${coords[0][0]},${coords[0][1]}`
+    } else {
+      route_lat_long=route_lat_long+`${coords[i][0]},${coords[i][1]}`
+    }
+  }
+  console.log(route_lat_long)
 });

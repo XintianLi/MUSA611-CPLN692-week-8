@@ -165,10 +165,36 @@ $(document).ready(function() {
   });
 
   // click handler for the "calculate" button (probably you want to do something with this)
+var data;
+var route_lat_long;
+
   $("#calculate").click(function(e) {
     var dest = $('#dest').val();
     console.log(dest);
+    var coords=`https://api.mapbox.com/geocoding/v5/mapbox.places/${dest}.json?access_token=pk.eyJ1IjoieGludGlhbiIsImEiOiJjazh1bGtkOXMwY2h4M25wYXh2d3J5NGpzIn0.6f78lOG9zSD3Iicqt6nXqQ`
+    $.ajax(coords).done(function(e){
+      data = e;
+      console.log(data);
+      console.log(data.features[0].center);
+      route_lat_long=`${state.position.marker._latlng.lng},${state.position.marker._latlng.lat};${data.features[0].center[0]},${data.features[0].center[1]}`
+      console.log(route_lat_long);
+      var direction=`https://api.mapbox.com/directions/v5/mapbox/walking/${route_lat_long}?access_token=pk.eyJ1IjoieGludGlhbiIsImEiOiJjazh1bGtkOXMwY2h4M25wYXh2d3J5NGpzIn0.6f78lOG9zSD3Iicqt6nXqQ`
+      $.ajax(direction).done(function(e){
+        // var data = e;
+        var geometry =e.routes[0].geometry
+        var linestring = polyline.toGeoJSON(geometry)
+        console.log(linestring)
+        lineOnMap=JSON.stringify(linestring);
+        console.log(lineOnMap)
+        L.geoJSON(linestring).addTo(map);
+          console.log(typeof(linestring));
+          console.log(typeof(lineOnMap))
+        // L.geoJSON(lineOnMap).addTo(map);
+      })
+      console.log(data)
+    })
+
   });
 
 });
-
+// https://api.mapbox.com/directions/v5/mapbox/walking/-75.237626,39.963641;-75.232262,39.968114?access_token=pk.eyJ1IjoieGludGlhbiIsImEiOiJjazh1bGtkOXMwY2h4M25wYXh2d3J5NGpzIn0.6f78lOG9zSD3Iicqt6nXqQ

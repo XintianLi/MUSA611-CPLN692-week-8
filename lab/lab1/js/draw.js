@@ -129,6 +129,9 @@ map.on('draw:created', function (e) {
       $(`div[data-leaflet-id|=${e.target._leaflet_id}]`).css('background-color','white')
     })
 
+      $(`div[data-leaflet-id|=${id}]`).click(function(e){
+        layer.setStyle({fillColor:"red"})
+      })
     // $(`div[data-leaflet-id|=${id}]`).click(function(e){
     //
     // })
